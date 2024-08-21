@@ -9,17 +9,18 @@ function validate($inputData)
     // $validatedData = mysqli_real_escape_string($conn, $inputData);
     // return trim($validatedData);
 }
-function redirect($url, $message) {
-    header("Location: $url?message=" . urlencode($message));
+// function redirect($url, $message)
+// {
+//     header("Location: $url?message=" . urlencode($message));
+//     exit();
+// }
+
+function redirect($url, $status)
+{
+    $_SESSION['status'] = $status;
+    header('Location: ' . $url); 
     exit();
 }
-
-// function redirect($url, $status)
-// {
-//     $_SESSION['status'] = $status;
-//     header('Location : ' . $url);
-//     exit(0);
-// }
 function alertMessage()
 {
     if (isset($_SESSION['status'])) {
@@ -34,9 +35,9 @@ function alertMessage()
 
 function insert($tableName, $data)
 {
-    global $conn; 
+    global $conn;
     $columns = implode(", ", array_keys($data));
-    $values  = implode(", ", array_map(function ($item) use ($conn) {
+    $values = implode(", ", array_map(function ($item) use ($conn) {
         return "'" . mysqli_real_escape_string($conn, $item) . "'";
     }, array_values($data)));
     $sql = "INSERT INTO $tableName ($columns) VALUES ($values)";
@@ -45,17 +46,32 @@ function insert($tableName, $data)
 
 function update($tableName, $id, $data)
 {
+    // global $conn;
+    // $table = validate(($tableName));
+    // $id = validate(($id));
+
+    // $updateDataString = "";
+    // foreach ($data as $column => $value) {
+    //     $updateDataString .= $column . '=' . "'$value'";
+    // }
+    // $finalUpdateData = substr(trim($updateDataString), 0, -1);
+    // $query = "update $table set $finalUpdateData where id='$id'";
+    // $result = mysqli_query($conn, $query);
+    // return $result;
     global $conn;
-    $table = validate(($tableName));
-    $id = validate(($id));
+    $table = validate($tableName);
+    $id = validate($id);
 
     $updateDataString = "";
     foreach ($data as $column => $value) {
-        $updateDataString .= $column . '=' . "'$value'";
+        $updateDataString .= $column . "='" . $value . "', ";
     }
-    $finalUpdateData = substr(trim($updateDataString), 0, -1);
-    $query = "update $table set $finalUpdateData where id='$id'";
+    // Remove the trailing comma and space
+    $finalUpdateData = rtrim($updateDataString, ', ');
+
+    $query = "UPDATE $tableName SET $finalUpdateData WHERE id='$id'";
     $result = mysqli_query($conn, $query);
+
     return $result;
 }
 function getAll($tableName, $status = null)
@@ -80,11 +96,10 @@ function getById($tableName, $id)
     $result = mysqli_query($conn, $query);
     if ($result) {
         if (mysqli_num_rows($result) == 1) {
-            // $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-            $row=mysqli_fetch_assoc($result);
+            $row = mysqli_fetch_assoc($result);
             $response = [
                 'status' => 200,
-                'data'=> $row,
+                'data' => $row,
                 'message' => 'Record Found'
             ];
             return $response;
@@ -104,13 +119,27 @@ function getById($tableName, $id)
     }
 }
 
-function delete($tableName,$id){
+function deleteAdmin($tableName, $id)
+{
     global $conn;
     $table = validate($tableName);
     $id = validate($id);
     $query = "delete from $table where id='$id' limit 1";
-    $result=mysqli_query($conn,$query);
+    $result = mysqli_query($conn, $query);
     return $result;
 }
 
+function checkParamId($type)
+{
+    if (isset($_GET[$type])) {
+        if ($_GET[$type] != '') {
+
+            return $_GET[$type];
+        } else {
+            return '<h5>No Id Found</h5>';
+        }
+    } else {
+        return '<h5>No Id Given</h5>';
+    }
+}
 ?>

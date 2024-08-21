@@ -35,8 +35,8 @@
                                     <td><?= $adminItem['name'] ?></td>
                                     <td><?= $adminItem['email'] ?></td>
                                     <td>
-                                        <a href="../admin/admins-edit.php" class="btn btn-success">Edit</a>
-                                        <a href="../admin/admins-delete.php" class="btn btn-danger">Delete</a>
+                                        <a href="../admin/admins-edit.php?id=<?= $adminItem['id'];  ?>" class="btn btn-success">Edit</a>
+                                        <a href="../admin/admins-delete.php?id=<?= $adminItem['id'];  ?>" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

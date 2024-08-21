@@ -10,7 +10,7 @@ if (isset($_POST['saveAdmin'])) {
     $email = validate($_POST['email']);
     $password = validate($_POST['password']);
     $phone = validate($_POST['phone']);
-    $is_ban = isset($_POST['is_ban']) == true ? 1:0;
+    $is_ban = isset($_POST['is_ban']) == true ? 1 : 0;
 
 
     if ($name != '' && $email != '' && $password != '') {
@@ -28,15 +28,51 @@ if (isset($_POST['saveAdmin'])) {
             'phone' => $phone,
             'is_ban' => $is_ban,
         ];
-        $result=insert('admins',$data);
-        if($result){
+        $result = insert('admins', $data);
+        if ($result) {
             redirect('../admin/admins.php', "Admin Created Successful!");
-        }else{
-        redirect('../admin/admins-create.php', "Something Went Wrong!");
+        } else {
+            redirect('../admin/admins-create.php', "Something Went Wrong!");
         }
 
     } else {
         redirect('../admin/admins-create.php', "Please fill require fields");
+    }
+}
+
+if (isset($_POST['updateAdmin'])) {
+    $adminId = validate($_POST['adminId']);
+    $adminData = getById('admins', $adminId);
+    if ($adminData['status'] != 200) {
+        redirect('../admin/admins-edit.php?id=' . $adminId, "Please fill require fields");
+
+    }
+    $name = validate($_POST['name']);
+    $email = validate($_POST['email']);
+    $password = validate($_POST['password']);
+    $phone = validate($_POST['phone']);
+    $is_ban = isset($_POST['is_ban']) == true ? 1 : 0;
+
+    if ($password != '') {
+        $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+    } else {
+        $hashedPassword = $adminData['data']['password'];
+    }
+
+    if ($name != '' && $email != '') {
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'password' => $hashedPassword,
+            'phone' => $phone,
+            'is_ban' => $is_ban,
+        ];
+        $result = update('admins', $adminId, $data);
+        if ($result) {
+            redirect('../admin/admins.php?id=' . $adminId, "Admin Updated Successful!");
+        } else {
+            redirect('../admin/admins-edit.php?id=' . $adminId, "Something Went Wrong!");
+        }
     }
 }
 ?>
