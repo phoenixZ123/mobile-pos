@@ -4,10 +4,14 @@ session_start();
 require 'dbcon.php';
 function validate($inputData)
 {
-    global $conn;
     return htmlspecialchars(strip_tags(trim($inputData)));
-    // $validatedData = mysqli_real_escape_string($conn, $inputData);
-    // return trim($validatedData);
+}
+function redirect($url, $message = null) {
+    if ($message) {
+        $_SESSION['status'] = $message;
+    }
+    header("Location: " . $url);
+    exit();
 }
 // function redirect($url, $message)
 // {
@@ -15,13 +19,14 @@ function validate($inputData)
 //     exit();
 // }
 
-function redirect($url, $status)
-{
-    $_SESSION['status'] = $status;
-    header('Location: ' . $url); 
-    exit();
-}
+// function redirect($url, $status)
+// {
+//     $_SESSION['status'] = $status;
+//     header('Location: ' . $url); 
+//     exit();
+// }
 function alertMessage()
+
 {
     if (isset($_SESSION['status'])) {
 
@@ -141,5 +146,10 @@ function checkParamId($type)
     } else {
         return '<h5>No Id Given</h5>';
     }
+}
+
+function logoutSession(){
+    unset($_SESSION['loggedIn']);
+    unset($_SESSION['loggedInUser']);
 }
 ?>

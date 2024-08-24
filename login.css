@@ -1,0 +1,11 @@
+.container{
+    max-width: 600px;
+}
+body{
+    
+    background-image: url(../images/contact_form_background.jpg);
+}
+input{
+    width: 300px;
+    margin: 40px;
+}
