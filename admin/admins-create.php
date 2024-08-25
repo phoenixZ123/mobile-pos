@@ -3,7 +3,7 @@
     <div class="card mt-4 shadow">
         <div class="card-header">
             <h4 class="md-0">Add Admin
-                <a href="admins.php" class="btn btn-primary float-end">Back</a>
+                <a href="admins.php" class="btn btn-danger float-end">Back</a>
             </h4>
         </div>
         <div class="card-body m-auto">
@@ -33,7 +33,7 @@
                         <input type="checkbox" name="is_ban"  style="width: 30px;height:30px;">
                     </div>
                     <div class="col-md-3 mb-3">
-                      <button type="submit" name="saveAdmin" class="btn btn-success">Save</button>
+                      <button type="submit" name="saveAdmin" class="btn btn-primary float-end">Save</button>
                     </div>
 
                 </div>

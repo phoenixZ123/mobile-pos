@@ -21,8 +21,9 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Name</th>                          
+                                <!-- <th>ID</th> -->
+                                <th>Name</th> 
+                                <th>Description</th>                          
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -31,9 +32,10 @@
 
                             <?php foreach ($categories as $cateItem): ?>
                                 <tr>
-                                    <td><?= $cateItem['id'] ?></td>
-                                    <td><?= $cateItem['name'] ?></td>                            
-                                    <td><?= ($cateItem['status']==0) ? "visible" : "hidden"?></td>
+                                    <!-- <td><?= $cateItem['id'] ?></td> -->
+                                    <td><?= $cateItem['cateName'] ?></td>   
+                                    <td><?= $cateItem['description'] ?></td>                            
+                                    <td><button class="btn badge <?= ($cateItem['status']==0) ? 'btn-primary' : 'btn-danger' ?>"><?= ($cateItem['status']==0) ? "visible" : "hidden"?></button></td>
                                     <td>
                                         <a href="../admin/categories-edit.php?id=<?= $cateItem['id'];  ?>" class="btn btn-success">Edit</a>
                                         <a href="../admin/categories-delete.php?id=<?= $cateItem['id'];  ?>" class="btn btn-danger">Delete</a>

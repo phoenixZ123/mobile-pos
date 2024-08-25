@@ -75,4 +75,47 @@ if (isset($_POST['updateAdmin'])) {
         }
     }
 }
+
+if (isset($_POST['saveCategory'])) {
+    $name = validate($_POST['name']);
+    $description = validate($_POST['description']);
+    $status = validate($_POST['status']) == true ? 1 : 0;
+    $data = [
+        'cateName' => $name,
+        'description' => $description,
+        'status' => $status,
+    ];
+    $result = insert('categories', $data);
+    if ($result) {
+        redirect('../admin/categories.php', "Admin Created Successful!");
+    } else {
+        redirect('../admin/categories-create.php', "Something Went Wrong!");
+    }
+
+
+}
+if (isset($_POST['updateCategory'])) {
+    $updateId = validate($_POST['cateId']);
+    $adminData = getById('categories', $updateId);
+    if ($adminData['status'] != 200) {
+        redirect('../admin/categories-edit.php?id=' . $updateId, "Please fill require fields");
+    }
+    $name = validate($_POST['name']);
+    $description = validate($_POST['description']);
+    $status = isset($_POST['status']) == true ? 1 : 0;
+
+    if ($name != '' && $description != '') {
+        $data = [
+            'cateName' => $name,
+            'description' => $description,
+            'status' => $status,
+        ];
+        $result = update('categories', $updateId, $data);
+        if ($result) {
+            redirect('../admin/categories.php?id=' . $updateId, "Category Updated Successful!");
+        } else {
+            redirect('../admin/categories-edit.php?id=' . $updateId, "Something Went Wrong!");
+        }
+    }
+}
 ?>

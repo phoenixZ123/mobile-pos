@@ -21,7 +21,7 @@
                     <table class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <!-- <th>ID</th> -->
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Status</th>
@@ -32,7 +32,7 @@
 
                             <?php foreach ($admins as $adminItem): ?>
                                 <tr>
-                                    <td><?= $adminItem['id'] ?></td>
+                                    <!-- <td><?= $adminItem['id'] ?></td> -->
                                     <td><?= $adminItem['name'] ?></td>
                                     <td><?= $adminItem['email'] ?></td>
                                     <td><?= ($adminItem['is_ban']==0) ? "active" : "unactive"?></td>

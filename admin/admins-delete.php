@@ -7,7 +7,7 @@ if (is_numeric($paramResId)) {
     $admin = getById('admins', $adminId);
     if ($admin['status'] == 200) {
 
-        $deleteAdmin = deleteAdmin('admins', $adminId);
+        $deleteAdmin = deleteFunc('admins', $adminId);
         if ($deleteAdmin) {
             redirect('../admin/admins.php', "Admin Deleted Successful.");
 

@@ -124,7 +124,7 @@ function getById($tableName, $id)
     }
 }
 
-function deleteAdmin($tableName, $id)
+function deleteFunc($tableName, $id)
 {
     global $conn;
     $table = validate($tableName);
