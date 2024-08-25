@@ -2,14 +2,7 @@
 </main>
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
-                        </div>
+                        
                     </div>
                 </footer>
             </div>
@@ -23,4 +16,22 @@
         <script src="../admin/assets/js/datatables-simple-demo.js"></script>
 
     </body>
+    <script>
+    const imageInput = document.getElementById('imageInput');
+    const imageFrame = document.getElementById('imageFrame');
+
+    imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                imageFrame.src = e.target.result;
+                imageFrame.style.display = 'block';
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 </html>

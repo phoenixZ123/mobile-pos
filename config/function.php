@@ -79,12 +79,12 @@ function update($tableName, $id, $data)
 
     return $result;
 }
+
 function getAll($tableName, $status = null)
 {
     global $conn;
     $table = validate($tableName);
     $status = validate($status);
-
     if ($status == 'status') {
         $query = "select * from $table where $status='0'";
     } else {
@@ -92,6 +92,106 @@ function getAll($tableName, $status = null)
     }
     return mysqli_query($conn, $query);
 }
+function getProductsByCategory($categoryName) {
+    global $conn;
+
+    // Prepare the SQL query with the provided category name
+    $query = "SELECT products.*, categories.cateName 
+              FROM products 
+              JOIN categories ON products.category_id = categories.id
+              WHERE categories.cateName = ?";
+              
+    // Prepare the statement
+    $stmt = mysqli_prepare($conn, $query);
+    if (!$stmt) {
+        die("Query preparation failed: " . mysqli_error($conn));
+    }
+
+    // Bind the category name parameter to the prepared statement
+    mysqli_stmt_bind_param($stmt, "s", $categoryName);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        die("Query execution failed: " . mysqli_error($conn));
+    }
+
+    return $result;
+}
+function getCategoryById($cateId) {
+    global $conn;
+
+    // Prepare the SQL query to fetch the category by cate_id
+    $query = "SELECT cateName FROM categories WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    if (!$stmt) {
+        die("Query preparation failed: " . mysqli_error($conn));
+    }
+
+    // Bind the category ID parameter to the prepared statement
+    mysqli_stmt_bind_param($stmt, "i", $cateId);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        die("Query execution failed: " . mysqli_error($conn));
+    }
+
+    // Fetch and return the category name
+    $category = mysqli_fetch_assoc($result);
+
+    return $category ? $category['cateName'] : null;
+}
+
+function getBrandById($brandId) {
+    global $conn;
+
+    // Prepare the SQL query to fetch the brand by brand_id
+    $query = "SELECT brandName FROM brands WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    if (!$stmt) {
+        die("Query preparation failed: " . mysqli_error($conn));
+    }
+
+    // Bind the brand ID parameter to the prepared statement
+    mysqli_stmt_bind_param($stmt, "i", $brandId);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        die("Query execution failed: " . mysqli_error($conn));
+    }
+
+    // Fetch and return the brand name
+    $brand = mysqli_fetch_assoc($result);
+
+    return $brand ? $brand['brandName'] : null;
+}
+
+// Example usage
+$categoryName = "Phone";
+$products = getProductsByCategory($categoryName);
+
+if (mysqli_num_rows($products) > 0) {
+    while ($product = mysqli_fetch_assoc($products)) {
+        echo $product['name'] . " - " . $product['cateName'] . "<br />";
+    }
+} else {
+    echo "No products found for category: " . htmlspecialchars($categoryName);
+}
+
 function getById($tableName, $id)
 {
     global $conn;

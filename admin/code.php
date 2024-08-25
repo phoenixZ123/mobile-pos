@@ -75,6 +75,136 @@ if (isset($_POST['updateAdmin'])) {
         }
     }
 }
+if (isset($_POST['updateProduct'])) {
+    $productId = validate($_POST['productId']);
+    $productData = getById('products', $productId);
+    if ($productData['status'] != 200) {
+        redirect('../admin/products-edit.php?id=' . $productId, "Please fill required fields");
+    }
+
+    $cate_id = validate($_POST['category_id']);
+    $brand_id = validate($_POST['brand_id']);
+    $name = validate($_POST['name']);
+    $memory = validate($_POST['memory']);
+    $size = validate($_POST['size']);
+    $price = validate($_POST['price']);
+    $quantity = validate($_POST['quantity']);
+    $status = isset($_POST['status']) ? 1 : 0;
+
+    // Check if a new image is uploaded
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image = $_FILES['image'];
+
+        // Validate and handle image upload
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $fileExtension = pathinfo($image['name'], PATHINFO_EXTENSION);
+
+        if (in_array(strtolower($fileExtension), $allowedExtensions)) {
+            $newFileName = uniqid('product_') . '.' . $fileExtension;
+            $uploadPath = 'assets/uploads/products/' . $newFileName; // Change to your upload directory
+
+            if (move_uploaded_file($image['tmp_name'], $uploadPath)) {
+                // File uploaded successfully
+                $imagePath = $uploadPath;
+            } else {
+                redirect('../admin/products-edit.php?id=' . $productId, "Failed to upload image");
+                exit;
+            }
+        } else {
+            redirect('../admin/products-edit.php?id=' . $productId, "Invalid file type");
+            exit;
+        }
+    } else {
+        // No new image uploaded, use the existing image path
+        $imagePath = $productData['data']['image'];
+    }
+
+    if ($name != '' && $memory != '' && $size != '' && $price != '' && $quantity != '') {
+        $data = [
+            'category_id' => $cate_id,
+            'name' => $name,
+            'memory' => $memory,
+            'price' => $price,
+            'quantity' => $quantity,
+            'image' => $imagePath,  // Updated image path
+            'status' => $status,
+            'brand_id' => $brand_id,
+            'size' => $size,
+        ];
+
+        $result = update('products', $productId, $data);
+        if ($result) {
+            redirect('../admin/products.php?id=' . $productId, "Product Updated Successfully!");
+        } else {
+            redirect('../admin/products-edit.php?id=' . $productId, "Something Went Wrong!");
+        }
+    }
+}
+if (isset($_POST['updateLaptopProduct'])) {
+    $productId = validate($_POST['productId']);
+    $productData = getById('products', $productId);
+    if ($productData['status'] != 200) {
+        redirect('../admin/products-edit.php?id=' . $productId, "Please fill required fields");
+    }
+
+    $cate_id = validate($_POST['category_id']);
+    $brand_id = validate($_POST['brand_id']);
+    $name = validate($_POST['name']);
+    $memory = validate($_POST['memory']);
+    $size = validate($_POST['size']);
+    $price = validate($_POST['price']);
+    $quantity = validate($_POST['quantity']);
+    $status = isset($_POST['status']) ? 1 : 0;
+
+    // Check if a new image is uploaded
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image = $_FILES['image'];
+
+        // Validate and handle image upload
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $fileExtension = pathinfo($image['name'], PATHINFO_EXTENSION);
+
+        if (in_array(strtolower($fileExtension), $allowedExtensions)) {
+            $newFileName = uniqid('product_') . '.' . $fileExtension;
+            $uploadPath = 'assets/uploads/products/' . $newFileName; // Change to your upload directory
+
+            if (move_uploaded_file($image['tmp_name'], $uploadPath)) {
+                // File uploaded successfully
+                $imagePath = $uploadPath;
+            } else {
+                redirect('../admin/products-edit.php?id=' . $productId, "Failed to upload image");
+                exit;
+            }
+        } else {
+            redirect('../admin/products-edit.php?id=' . $productId, "Invalid file type");
+            exit;
+        }
+    } else {
+        // No new image uploaded, use the existing image path
+        $imagePath = $productData['data']['image'];
+    }
+
+    if ($name != '' && $memory != '' && $size != '' && $price != '' && $quantity != '') {
+        $data = [
+            'category_id' => $cate_id,
+            'name' => $name,
+            'memory' => $memory,
+            'price' => $price,
+            'quantity' => $quantity,
+            'image' => $imagePath,  // Updated image path
+            'status' => $status,
+            'brand_id' => $brand_id,
+            'size' => $size,
+        ];
+
+        $result = update('products', $productId, $data);
+        if ($result) {
+            redirect('../admin/laptop-products.php?id=' . $productId, "Product Updated Successfully!");
+        } else {
+            redirect('../admin/laptop-products-edit.php?id=' . $productId, "Something Went Wrong!");
+        }
+    }
+}
 
 if (isset($_POST['saveCategory'])) {
     $name = validate($_POST['name']);
@@ -91,8 +221,6 @@ if (isset($_POST['saveCategory'])) {
     } else {
         redirect('../admin/categories-create.php', "Something Went Wrong!");
     }
-
-
 }
 if (isset($_POST['updateCategory'])) {
     $updateId = validate($_POST['cateId']);
@@ -116,6 +244,43 @@ if (isset($_POST['updateCategory'])) {
         } else {
             redirect('../admin/categories-edit.php?id=' . $updateId, "Something Went Wrong!");
         }
+    }
+}
+if (isset($_POST['saveProduct'])) {
+    $name = validate($_POST['name']);
+    $cate_id = validate($_POST['category_id']);
+    $brand_id = validate($_POST['brand_id']);
+    $memory = validate($_POST['memory']);
+    $size = validate($_POST['size']);
+    $price = validate($_POST['price']);
+    $quantity = validate($_POST['quantity']);
+    $status = validate($_POST['status']) == true ? 1 : 0;
+
+    if ($_FILES['image']['size'] > 0) {
+        $path = "./assets/uploads/products";
+        $img_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
+        $file_name = time() . '.' . $img_ext;
+        move_uploaded_file($_FILES['image']['tmp_name'], $path . '/' . $file_name);
+        $finalImage = "assets/uploads/products/" . $file_name;
+    } else {
+        $finalImage = '';
+    }
+    $data = [
+        'category_id' => $cate_id,
+        'name' => $name,
+        'memory' => $memory,
+        'size' => $size,
+        'price' => $price,
+        'quantity' => $quantity,
+        'image' => $finalImage,
+        'status' => $status,
+        'brand_id' => $brand_id,
+    ];
+    $result = insert('products', $data);
+    if ($result) {
+        redirect('../admin/products-create.php', "Product Created Successful!");
+    } else {
+        redirect('../admin/products-create.php', "Something Went Wrong!");
     }
 }
 ?>
