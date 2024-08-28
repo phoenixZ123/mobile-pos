@@ -283,4 +283,73 @@ if (isset($_POST['saveProduct'])) {
         redirect('../admin/products-create.php', "Something Went Wrong!");
     }
 }
+if (isset($_POST['saveCustomer'])) {
+    $name = validate($_POST['name']);
+    $email = validate($_POST['email']);
+    $phone = validate($_POST['phone']);
+    $status = validate($_POST['status']) == true ? 1 : 0;
+
+    if ($name != '') {
+        $emailCheck = mysqli_query($conn, "SELECT * FROM customers where email='$email'");
+        if ($emailCheck) {
+            if(mysqli_num_rows($emailCheck) > 0)
+            {
+                redirect('../admin/customers-create.php', "Email Already Exists!");
+
+            }          
+        }
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'status' => $status,
+        ];
+        $res=insert('customers',$data);
+        if($res){
+            redirect('../admin/customers.php', "Customer Added Successfully!!");
+
+        }else{
+            redirect('../admin/customers-create.php', "Something Went Wrong!");
+
+        }
+    } else {
+        redirect('../admin/customers-create.php', "Please Fill The Required!");
+
+    }
+   
+
+    $result = insert('customers', $data);
+    if ($result) {
+        redirect('../admin/customers.php', "Admin Created Successful!");
+    } else {
+        redirect('../admin/customers-create.php', "Something Went Wrong!");
+    }
+}
+if (isset($_POST['updateCustomer'])) {
+    $cusId = validate($_POST['cusId']);
+    $cusData = getById('customers', $cusId);
+    if ($cusData['status'] != 200) {
+        redirect('../admin/customers-edit.php?id=' . $cusId, "Please fill require fields");
+
+    }
+    $name = validate($_POST['name']);
+    $email = validate($_POST['email']);
+    $phone = validate($_POST['phone']);
+    $status = isset($_POST['status']) ? 1 : 0;
+
+    if ($name != '' && $email != '' && $phone != '' ) {
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'phone' => $phone,
+            'status' => $status,
+        ];
+        $result = update('customers', $cusId, $data);
+        if ($result) {
+            redirect('../admin/customers.php?id=' . $cusId, "Admin Updated Successful!");
+        } else {
+            redirect('../admin/customers-edit.php?id=' . $cusId, "Something Went Wrong!");
+        }
+    }
+}
 ?>

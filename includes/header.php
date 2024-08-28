@@ -16,6 +16,7 @@ require(__DIR__.'/../includes/authentication.php');
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"/>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
     <link href="../admin/assets/css/styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
@@ -130,6 +131,24 @@ p span:nth-child(4){
         bottom: 100%;
     }
 }
+/* quantity */
+.quantity-control {
+    display: inline-flex;
+    align-items: center;
+}
+
+.decrement,
+.increment {
+    padding: 5px 10px;
+    font-size: 18px;
+}
+
+.qty {
+    width: 50px;
+    text-align: center;
+    margin: 0 5px;
+}
+
 </style>
 </head>
 <body class="sb-nav-fixed">

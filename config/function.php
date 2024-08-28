@@ -26,7 +26,6 @@ function redirect($url, $message = null) {
 //     exit();
 // }
 function alertMessage()
-
 {
     if (isset($_SESSION['status'])) {
 
@@ -180,18 +179,6 @@ function getBrandById($brandId) {
     return $brand ? $brand['brandName'] : null;
 }
 
-// Example usage
-$categoryName = "Phone";
-$products = getProductsByCategory($categoryName);
-
-if (mysqli_num_rows($products) > 0) {
-    while ($product = mysqli_fetch_assoc($products)) {
-        echo $product['name'] . " - " . $product['cateName'] . "<br />";
-    }
-} else {
-    echo "No products found for category: " . htmlspecialchars($categoryName);
-}
-
 function getById($tableName, $id)
 {
     global $conn;
@@ -252,4 +239,15 @@ function logoutSession(){
     unset($_SESSION['loggedIn']);
     unset($_SESSION['loggedInUser']);
 }
+
+function jsonResponse($status,$status_type,$message){
+    $response = [
+        'status' => $status,
+        'status_type' => $status_type,
+        'message' => $message
+    ];
+    echo json_encode($response);
+    return;
+}
+
 ?>

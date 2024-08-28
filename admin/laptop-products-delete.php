@@ -7,8 +7,12 @@ if (is_numeric($paramResId)) {
     $record = getById('products', $deleteId);
     if ($record['status'] == 200) {
 
-        $deleteCate = deleteFunc('products', $deleteId);
-        if ($deleteCate) {
+        $delete= deleteFunc('products', $deleteId);
+        if ($delete) {
+            $deleteImage="../admin".$product['data']['image'];
+            if(file_exists($deleteImage)){
+                unlink($deleteImage);
+            }
             redirect('../admin/laptop-products.php', "Product Deleted Successful.");
 
         } else {
