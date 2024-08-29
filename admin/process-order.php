@@ -46,10 +46,9 @@ if (isset($_POST['submitOrder'])) {
                     'points' => $point,
                     'cus_id'=> $customerId,
                 ];
-
                 $itemRes = insert('order_items', $orderItemsData);
                 if ($itemRes) {
-                    redirect('../admin/order-create.php', "Order Added Successfully!!");
+                    redirect('../admin/orders.php', "Order Added Successfully!!");
                 } else {
                     redirect('../admin/order-create.php', "Failed to Add Order Items!");
                 }

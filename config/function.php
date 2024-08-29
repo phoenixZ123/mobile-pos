@@ -93,8 +93,6 @@ function getAll($tableName, $status = null)
 }
 function getProductsByCategory($categoryName) {
     global $conn;
-
-    // Prepare the SQL query with the provided category name
     $query = "SELECT products.*, categories.cateName 
               FROM products 
               JOIN categories ON products.category_id = categories.id
@@ -108,6 +106,37 @@ function getProductsByCategory($categoryName) {
 
     // Bind the category name parameter to the prepared statement
     mysqli_stmt_bind_param($stmt, "s", $categoryName);
+
+    // Execute the statement
+    mysqli_stmt_execute($stmt);
+
+    // Get the result
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        die("Query execution failed: " . mysqli_error($conn));
+    }
+
+    return $result;
+}
+function getOrder($table,$phone){
+    global $conn;
+    $query = "SELECT $table.*,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
+    FROM $table 
+    JOIN customers ON $table.cus_id = customers.id 
+    JOIN products ON $table.product_id = products.id 
+    JOIN orders ON orders.id = $table.order_id 
+
+    WHERE customers.phone = ?";
+              
+    // Prepare the statement
+    $stmt = mysqli_prepare($conn, $query);
+    if (!$stmt) {
+        die("Query preparation failed: " . mysqli_error($conn));
+    }
+
+    // Bind the category name parameter to the prepared statement
+    mysqli_stmt_bind_param($stmt, "s", $phone);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
