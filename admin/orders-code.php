@@ -69,15 +69,48 @@ if (isset($_POST['productIncDec'])) {
     $flag = true;
     foreach ($_SESSION['productItems'] as $key => $item) {
         if ($item['product_id'] == $productId) {
-            $flas=true;
+            $flas = true;
             $_SESSION['productItems'][$key]['quantity'] = $quantity;
         }
     }
 
-    if($flag){
-        jsonResponse(200,"Success","Quantity Updated");
-    }else{
-        jsonResponse(500,"Cause Error","Something Went Wrong");
+    if ($flag) {
+        jsonResponse(200, "Success", "Quantity Updated");
+    } else {
+        jsonResponse(500, "Cause Error", "Something Went Wrong");
     }
 }
+if (isset($_POST['proceedToPlaceBtn'])) {
+    // Assuming validate() properly sanitizes the input
+    $phone = validate($_POST['cphone']);
+    
+    // Use prepared statements to prevent SQL injection
+    $query = "SELECT * FROM customers WHERE phone = ? LIMIT 1";
+    $stmt = mysqli_prepare($conn, $query);
+
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "s", $phone);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $_SESSION['invoice_no'] = "INV-" . rand(11111, 999999);
+                $_SESSION['cphone'] = $phone;
+                jsonResponse(200, 'success', "Customer Found");
+            } else {
+                $_SESSION['cphone'] = $phone;
+                jsonResponse(404, 'Warning', "Customer Not Found");
+            }
+        } else {
+            jsonResponse(500, 'error', "Error executing query");
+        }
+
+        // Close the statement
+        mysqli_stmt_close($stmt);
+    } else {
+        jsonResponse(500, 'error', "Failed to prepare statement");
+    }
+}
+
 ?>

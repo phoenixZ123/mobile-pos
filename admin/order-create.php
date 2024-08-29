@@ -54,7 +54,7 @@
         $sessionProducts = $_SESSION['productItems'];
     }
     ?>
-    
+
     <div class="card mt-3">
         <div class="card-header">
             <h4 class="mb-0">Products</h4>
@@ -65,6 +65,7 @@
             if (isset($_SESSION['productItems'])) {
                 ?>
                 <div class=" table-responsize mb-3">
+
                     <table class="table table-bordered table-striped" id="productContent">
                         <thead>
                             <tr>
@@ -79,54 +80,130 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($sessionProducts as $key => $item): ?>
-                                <tr>
-                                    <td style="width:15px;"><?= $i++; ?></td>
-                                    <td><img style="width: 110px;height:120px;" src="<?= $item['image'] ?>" alt=""></td>
-                                    <td><?= $item['name'] ?></td>
-                                    <td><?= $item['memory'] ?></td>
-                                    <td id="qty"><?= number_format($item['price'], 0) ?></td>
-                                    <td>
-                                    <div class="quantity-control qtyBox" >
-                                        <input type="hidden" value="<?= $item['product_id']?>" name="prodId">
-                                        <button type="button" class="decrement">-</button>
-                                        <input type="number"  class="qty" value="<?= $item['quantity']?>" min="1" />
-                                        <button type="button" class="increment">+</button>
-                                    </div>
-                                    </td>
-                                    <td><?= number_format($item['price'] * $item['quantity'], 0) ?></td>
-                                    <td><a href="order-item-delete.php?index=<?= $key; ?> "><button
-                                                class="btn btn-danger">Remove</button></a></td>
-                                </tr>
-                            <?php endforeach; ?>
+                            <form action="process-order.php" id="orderForm" method="post">
+                                <?php foreach ($sessionProducts as $key => $item): ?>
+                                    <tr>
+                                        <td style="width:15px;"><?= $i++; ?></td>
+                                        <td><img style="width: 110px;height:120px;" src="<?= $item['image'] ?>" alt=""></td>
+                                        <td><?= $item['name'] ?></td>
+                                        <td><?= $item['memory'] ?></td>
+                                        <td id="qty"><?= number_format($item['price'], 0) ?></td>
+                                        <td>
+                                            <div class="quantity-control qtyBox">
+                                                <input type="hidden" value="<?= $item['product_id'] ?>" name="prodId">
+                                                <button type="button" class="decrement">-</button>
+                                                <input type="number" class="qty" name="quanty" value="<?= $item['quantity'] ?>"
+                                                    min="1" />
+                                                <button type="button" class="increment">+</button>
+                                            </div>
+                                        </td>
+                                        <td><input type="text" name="total" value="<?= $item['price'] * $item['quantity'] ?>">
+                                        </td>
+                                        <td><a href="order-item-delete.php?index=<?= $key; ?> "
+                                                style="text-decoration:none;font-size:18px;font-weight:bold;background-color:pink;padding:5px;pointer:cursor;border-radius:5px;">
+                                                Remove</a></td>
+                                    </tr>
 
 
-                        </tbody>
-                    </table>
+                                <?php endforeach; ?>
+
+
+                                <input type="number" placeholder="Enter Customer Phone Number" id="cphone"
+                                    class="form-control m-2" name="cphone" value="">
+                                <div class="col-md-3 mb-3 d-flex">
+                                    <!-- <label for="">Status</label>
+                                    <input type="checkbox" name="status" style="width: 30px;height:30px;"> -->
+                                    <label for="">Status (Unchecked=Visible , Checked=Hidden)  ----></label>
+                                    <br />
+                                    <input type="checkbox" name="status" style="width: 30px;height:30px;">
+                                </div>
+
+                                <button class="btn btn-warning m-3" type="submit" name="submitOrder"
+                                    id="submitOrder">Process To
+                                    Place Order</button>
                 </div>
-                <?php
+            </div>
+        </div>
+        </form>
+        </tbody>
+        </table>
+
+        <?php
             } else {
                 echo "No Item Added";
             }
             ?>
-        </div>
-
-    </div>
-    <!-- <?php
-    print_r($_SESSION['productItemId']);
-    ?> -->
 </div>
+</div>
+<!-- <?php
+print_r($_SESSION['productItemId']);
+?> -->
+</div>
+
 <?php include('../includes/footer.php'); ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     // Ensure the DOM is fully loaded
     $(document).ready(function () {
+        // proceed order
+        $(document).on("click", ".proceedToPlaceOrder", function () {
+            console.log("Proceed");
+
+            var phoneNumber = $("#cphone").val();
+            var productId = $("#productSelect").val();
+
+            if (phoneNumber == '' && !$.isNumeric(phoneNumber)) {
+                swal("Enter Phone Number", "Enter Valid Phone Number", "warning");
+                return false;
+            } else {
+                var data = {
+                    'proceedToPlaceBtn': true,
+                    'cphone': phoneNumber,
+                    'product_id': productId,
+                };
+                // 
+                $.ajax({
+                    type: 'POST',
+                    url: 'orders-code.php',
+                    data: data,
+                    success: function (response) {
+                        window.location.href = "orders.php";
+                    }
+                });
+            }
+        });
+        // 
+        $('#submitOrder').click(function () {
+            var formData = $('#orderForm').serialize(); // Collect all form data
+
+            $.ajax({
+                type: 'POST',
+                url: 'process-order.php', // The PHP file that will process the form
+                data: formData,
+                success: function (response) {
+                    var res = JSON.parse(response);
+                    if (res.status === 200) {
+                        alert("Order submitted successfully!");
+                        // You can redirect or refresh the page here
+                    } else {
+                        alert("There was an error submitting your order: " + res.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                    alert("An error occurred while submitting the order.");
+                }
+            });
+        });
+
+
+        // 
         function quantityIncDec(prodId, qty) {
             console.log("quantityIncDec called with:", prodId, qty);  // Debugging line
             $.ajax({
                 type: 'POST',
                 url: 'orders-code.php',
-                data: { 
+                data: {
                     'productIncDec': true,
                     'product_id': prodId,
                     'quantity': qty
@@ -134,15 +211,18 @@
                 success: function (response) {
                     var res = JSON.parse(response);
                     if (res.status == 200) {
-            // $('#productArea').load('#productContent');
+                        // $('#productArea').load(' #productContent');
+                        window.location.reload();
 
                     } else {
                     }
                 }
 
             });
+            window.location.reload();
 
-                        window.location.reload();
+            // $('#productArea').load(' #productContent');
+
 
         }
 
@@ -171,7 +251,6 @@
                 quantityIncDec(productId, qtyVal);
             }
         });
-
         // Brand select change handler
         $('#brandSelect').on('change', function () {
             var brandId = $(this).val();
@@ -190,6 +269,36 @@
             }
         });
     });
+    // 
+    $phone = validate($_POST['cphone']);
+
+    // Use prepared statements to prevent SQL injection
+    $query = "SELECT * FROM customers WHERE phone = ? LIMIT 1";
+    $stmt = mysqli_prepare($conn, $query);
+
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "s", $phone);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result) {
+            if (mysqli_num_rows($result) > 0) {
+                $_SESSION['invoice_no'] = "INV-".rand(11111, 999999);
+                $_SESSION['cphone'] = $phone;
+                jsonResponse(200, 'success', "Customer Found");
+            } else {
+                $_SESSION['cphone'] = $phone;
+                jsonResponse(404, 'Warning', "Customer Not Found");
+            }
+        } else {
+            jsonResponse(500, 'error', "Error executing query");
+        }
+
+        // Close the statement
+        mysqli_stmt_close($stmt);
+    } else {
+        jsonResponse(500, 'error', "Failed to prepare statement");
+    }
 </script>
 <!-- action -->
 <?php
