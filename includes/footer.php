@@ -17,6 +17,34 @@
 <script src="../admin/assets/js/custom.js"></script>
 </body>
 <script>
+    // 
+    function filterProductsByBrand() {
+    var brandId = document.getElementById('brand_id').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "get_products.php?brand_id=" + brandId, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            document.getElementById('products-table').innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+    // 
+    // laptop
+    function filterLaptopProductsByBrand() {
+    var brandId = document.getElementById('brand_id').value;
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "get_laptop_products.php?brand_id=" + brandId, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+            document.getElementById('products-table').innerHTML = xhr.responseText;
+        }
+    };
+    xhr.send();
+}
+    // 
     const imageInput = document.getElementById('imageInput');
     const imageFrame = document.getElementById('imageFrame');
 

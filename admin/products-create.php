@@ -3,7 +3,7 @@
     <div class="card  start-20 shadow ">
         <div class="card-header">
             <h4 class="md-0">Add Product
-                <a href="products.php" class="btn btn-danger float-end">Back</a>
+                <a href="products.php" class="btn btn-primary float-end">Back</a>
             </h4>
         </div>
         <div class="card-body d-flex justify-content-center">
@@ -94,7 +94,7 @@
                     </div>
                     <div class="col-md-12 mb-3 text-end">
                         <br />
-                        <button type="submit" name="saveProduct" class="btn btn-primary">Save</button>
+                        <button type="submit" name="saveProduct" class="btn btn-success">Save</button>
                     </div>
 
                 </div>

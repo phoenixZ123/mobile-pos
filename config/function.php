@@ -13,18 +13,7 @@ function redirect($url, $message = null) {
     header("Location: " . $url);
     exit();
 }
-// function redirect($url, $message)
-// {
-//     header("Location: $url?message=" . urlencode($message));
-//     exit();
-// }
 
-// function redirect($url, $status)
-// {
-//     $_SESSION['status'] = $status;
-//     header('Location: ' . $url); 
-//     exit();
-// }
 function alertMessage()
 {
     if (isset($_SESSION['status'])) {
@@ -119,15 +108,14 @@ function getProductsByCategory($categoryName) {
 
     return $result;
 }
-function getOrder($table,$phone){
+function getOrder($table){
     global $conn;
-    $query = "SELECT $table.*,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
+    $query = "SELECT $table.*,customers.phone,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
     FROM $table 
     JOIN customers ON $table.cus_id = customers.id 
     JOIN products ON $table.product_id = products.id 
     JOIN orders ON orders.id = $table.order_id 
-
-    WHERE customers.phone = ?";
+";
               
     // Prepare the statement
     $stmt = mysqli_prepare($conn, $query);
@@ -136,7 +124,7 @@ function getOrder($table,$phone){
     }
 
     // Bind the category name parameter to the prepared statement
-    mysqli_stmt_bind_param($stmt, "s", $phone);
+    // mysqli_stmt_bind_param($stmt, "s", $phone);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
@@ -245,10 +233,27 @@ function deleteFunc($tableName, $id)
     global $conn;
     $table = validate($tableName);
     $id = validate($id);
-    $query = "delete from $table where id='$id' limit 1";
+    $query = "delete from $table where id='$id'";
     $result = mysqli_query($conn, $query);
     return $result;
 }
+function deleteOrder($tableName, $id) {
+    global $conn;
+    $table = validate($tableName);
+    $id = validate($id);
+
+    // Correct SQL syntax for multi-table delete in MySQL
+    $query = "DELETE $table, order_items 
+              FROM $table 
+              JOIN order_items ON $table.id = order_items.order_id 
+              WHERE $table.id='$id'";
+    
+    $result = mysqli_query($conn, $query);
+
+    return $result;
+}
+
+
 
 function checkParamId($type)
 {

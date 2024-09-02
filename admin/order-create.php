@@ -3,7 +3,7 @@
     <div class="card mt-4 shadow-md">
         <div class="card-header">
             <h4 class="md-0">Create Order
-                <a href="orders.php" class="btn btn-danger float-end">Orders</a>
+                <a href="orders.php" class="btn btn-primary float-end">Orders</a>
             </h4>
         </div>
         <div class="card-body">
@@ -20,7 +20,7 @@
                                 require('../config/dbcon.php');
 
                                 // Fetch brands
-                                $brandQuery = "SELECT * FROM brands ORDER BY brandName ASC";
+                                $brandQuery = "SELECT * FROM brands ";
                                 $brandResult = mysqli_query($conn, $brandQuery);
 
                                 if (mysqli_num_rows($brandResult) > 0) {
@@ -43,7 +43,7 @@
                     </div>
                     <div class="col-md-3 mb-3 text-end">
                         <br />
-                        <button type="submit" name="addItem" class="btn btn-primary">ADD ITEM</button>
+                        <button type="submit" name="addItem" class="btn btn-success">ADD ITEM</button>
                     </div>
                 </div>
             </form>
@@ -59,15 +59,15 @@
         <div class="card-header">
             <h4 class="mb-0">Products</h4>
         </div>
-        <div class="card-body" id="productArea">
+        <div class="card-body" >
             <?php
             $i = 1;
             if (isset($_SESSION['productItems'])) {
                 ?>
-                <div class=" table-responsize mb-3">
+                <div class=" table-responsize" >
 
-                    <table class="table table-bordered table-striped" id="productContent">
-                        <thead>
+                    <table class="table table-bordered table-striped" id="productArea">
+                        <!-- <thead>
                             <tr>
                                 <th>No:</th>
                                 <th>Image</th>
@@ -78,9 +78,9 @@
                                 <th>Total Price</th>
                                 <th>Remove</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <form action="process-order.php" id="orderForm" method="post">
+                        </thead> -->
+                        <tbody id="productContent">
+                            <form action="process-order.php" id="orderForm" method="post" >
                                 <?php foreach ($sessionProducts as $key => $item): ?>
                                     <tr>
                                         <td style="width:15px;"><?= $i++; ?></td>
@@ -211,15 +211,17 @@ print_r($_SESSION['productItemId']);
                 success: function (response) {
                     var res = JSON.parse(response);
                     if (res.status == 200) {
-                        // $('#productArea').load(' #productContent');
-                        window.location.reload();
+                        $('#productArea').load(' #productContent');
+                        // window.location.reload();
 
                     } else {
                     }
                 }
 
             });
-            window.location.reload();
+            $('#productArea').load(' #productContent');
+
+            // window.location.reload();
 
             // $('#productArea').load(' #productContent');
 

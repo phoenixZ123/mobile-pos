@@ -3,13 +3,13 @@
     <div class="card mt-4 shadow-sm">
         <div class="card-header">
             <h4 class="md-0">Order Items
-                <a href="order-create.php" class="btn btn-primary float-end">Add Order</a>
+                <a href="order-create.php" class="btn btn-primary float-end">Back</a>
             </h4>
         </div>
         <div class="card-body">
             <?php alertMessage(); ?>
             <?php
-            $product = getOrder('order_items','09963280573');
+            $product = getOrder('order_items');
             if(!$product){
                 echo '<h4>Something Went Wrong</h4>';
                 return false;
@@ -46,8 +46,8 @@
     
                                     <!-- <td><button class="badge btn <?= ($Item['status']==0) ? "btn-primary" : "btn-danger"?>"><?= ($Item['status']==0) ? "visible" : "invisible"?></button></td> -->
                                     <td>
-                                        <a href="../admin/laptop-products-edit.php?id=<?= $Item['id'];  ?>" class="btn btn-success">Edit</a>
-                                        <a href="../admin/laptop-products-delete.php?id=<?= $Item['id'];  ?>" class="btn btn-danger">Delete</a>
+                                        <!-- <a href="../admin/laptop-products-edit.php?id=<?= $Item['id'];  ?>" class="btn btn-success">Edit</a> -->
+                                        <a href="../admin/orders-delete.php?id=<?= $Item['id'] ?>;" class="btn btn-danger">Delete</a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
