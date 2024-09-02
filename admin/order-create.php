@@ -64,9 +64,9 @@
             $i = 1;
             if (isset($_SESSION['productItems'])) {
                 ?>
-                <div class=" table-responsize mb-3">
+                <div class=" table-responsize mb-3" id="productContent">
 
-                    <table class="table table-bordered table-striped" id="productContent">
+                    <table class="table table-bordered table-striped" >
                         <thead>
                             <tr>
                                 <th>No:</th>
@@ -167,7 +167,9 @@ print_r($_SESSION['productItemId']);
                     url: 'orders-code.php',
                     data: data,
                     success: function (response) {
-                        window.location.href = "orders.php";
+                        // window.location.href = "orders.php";
+                        $('#productArea').load(' #productContent');
+
                     }
                 });
             }
@@ -211,17 +213,19 @@ print_r($_SESSION['productItemId']);
                 success: function (response) {
                     var res = JSON.parse(response);
                     if (res.status == 200) {
-                        // $('#productArea').load(' #productContent');
-                        window.location.reload();
+                        $('#productArea').load(' #productContent');
+                        // window.location.reload();
 
                     } else {
                     }
                 }
 
             });
-            window.location.reload();
+                        $('#productArea').load(' #productContent');
+        
+            // window.location.reload();
 
-            // $('#productArea').load(' #productContent');
+          
 
 
         }

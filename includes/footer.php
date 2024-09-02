@@ -17,6 +17,8 @@
 <script src="../admin/assets/js/custom.js"></script>
 </body>
 <script>
+    // 
+    // 
     const imageInput = document.getElementById('imageInput');
     const imageFrame = document.getElementById('imageFrame');
 
@@ -35,6 +37,24 @@
     });
     //
   
+   
+    function filterProductsByBrand() {
+        var brandId = document.getElementById('brand_id').value;
+        if (brandId) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "get_products.php?brand_id=" + brandId, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById('products-table').innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        } else {
+            // Reset to all products if no brand is selected
+            location.reload();
+        }
+    }
+
 
 </script>
 

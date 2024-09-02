@@ -12,7 +12,6 @@ if (!defined('DB_PASSWORD')) {
 if (!defined('DB_NAME')) {
     define('DB_NAME', 'pos_system'); // Change 'your_database_name' to your actual database name
 }
-
 // Create a connection
 $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 

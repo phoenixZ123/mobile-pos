@@ -119,7 +119,7 @@ function getProductsByCategory($categoryName) {
 
     return $result;
 }
-function getOrder($table,$phone){
+function getOrder($table){
     global $conn;
     $query = "SELECT $table.*,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
     FROM $table 
@@ -127,7 +127,7 @@ function getOrder($table,$phone){
     JOIN products ON $table.product_id = products.id 
     JOIN orders ON orders.id = $table.order_id 
 
-    WHERE customers.phone = ?";
+    ";
               
     // Prepare the statement
     $stmt = mysqli_prepare($conn, $query);
@@ -136,7 +136,7 @@ function getOrder($table,$phone){
     }
 
     // Bind the category name parameter to the prepared statement
-    mysqli_stmt_bind_param($stmt, "s", $phone);
+    // mysqli_stmt_bind_param($stmt, "s", $phone);
 
     // Execute the statement
     mysqli_stmt_execute($stmt);
@@ -278,5 +278,7 @@ function jsonResponse($status,$status_type,$message){
     echo json_encode($response);
     return;
 }
+
+
 
 ?>

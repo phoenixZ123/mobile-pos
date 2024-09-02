@@ -9,7 +9,7 @@
         <div class="card-body">
             <?php alertMessage(); ?>
             <?php
-            $product = getOrder('order_items','09963280573');
+            $product = getOrder('order_items');
             if(!$product){
                 echo '<h4>Something Went Wrong</h4>';
                 return false;
