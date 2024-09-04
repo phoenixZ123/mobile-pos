@@ -13,10 +13,10 @@ if (isset($_POST['loginBtn'])) {
             if (mysqli_num_rows($result) == 1) {
                 $row = mysqli_fetch_assoc($result);
                 $hashedPassword = $row['password'];
-
-                // if (!password_verify($password, $hashedPassword)) {
-                //     redirect('http://localhost/OODDProject/pos_phpProject/login.php', "Invalid Password");
-                // }
+                $hashinput=password_hash($password,PASSWORD_BCRYPT);
+                if (!password_verify($password, $hashedPassword)) {
+                    redirect('http://localhost/OODDProject/pos_phpProject/login.php', "Invalid Password");
+                }
                 if ($row['is_ban'] == 1) {
                     redirect('http://localhost/OODDProject/pos_phpProject/login.php', "Your Account Has Been Banned!!Contact Your Admin");
 

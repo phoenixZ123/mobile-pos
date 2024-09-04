@@ -110,7 +110,7 @@ function getProductsByCategory($categoryName) {
 }
 function getOrder($table){
     global $conn;
-    $query = "SELECT $table.*,customers.phone,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
+    $query = "SELECT $table.*,orders.date,customers.phone,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
     FROM $table 
     JOIN customers ON $table.cus_id = customers.id 
     JOIN products ON $table.product_id = products.id 
@@ -227,6 +227,47 @@ function getById($tableName, $id)
         return $response;
     }
 }
+function getTotalQuantitySold($tableName) {
+    global $conn;
+    $table = validate($tableName);
+
+    $query = "SELECT SUM(quantity) AS total FROM $table";
+    
+    $res=mysqli_query($conn,$query);
+    return $res;
+  
+}
+
+function getOrdersDataForPieChart() {
+    global $conn;
+
+    // SQL query to get the total number of orders for each category
+    $query = "SELECT categories.cateName AS category, COUNT(orders.id) AS order_count
+              FROM orders
+              JOIN order_items ON orders.id = order_items.order_id
+              JOIN products ON order_items.product_id = products.id
+              JOIN categories ON products.category_id = categories.id
+              GROUP BY categories.cateName";
+
+    $result = mysqli_query($conn, $query);
+
+    // Initialize arrays to store labels and data
+    $labels = [];
+    $data = [];
+
+    if ($result) {
+        // Populate the labels and data arrays with the query results
+        while ($row = mysqli_fetch_assoc($result)) {
+            $labels[] = $row['category'];
+            $data[] = (int)$row['order_count'];
+        }
+    } else {
+        echo '<h4>Something Went Wrong</h4>';
+    }
+
+    return ['labels' => $labels, 'data' => $data];
+}
+
 
 function deleteFunc($tableName, $id)
 {
@@ -252,9 +293,6 @@ function deleteOrder($tableName, $id) {
 
     return $result;
 }
-
-
-
 function checkParamId($type)
 {
     if (isset($_GET[$type])) {
