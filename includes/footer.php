@@ -17,10 +17,7 @@
 <script src="../admin/assets/js/custom.js"></script>
 </body>
 <script>
-    // 
-  
-    // 
-    // 
+   
     function filterProductsByBrand() {
     var brandId = document.getElementById('brand_id').value;
 

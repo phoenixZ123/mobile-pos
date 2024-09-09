@@ -12,7 +12,7 @@
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseCategory"
                     aria-expanded="false" aria-controls="collapseCategory">
                     <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-                    Categories
+                    Categories and Brands
                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
                 <div class="collapse" id="collapseCategory" aria-labelledby="headingOne"
@@ -20,6 +20,8 @@
                     <nav class="sb-sidenav-menu-nested nav">
                         <a class="nav-link" href="./categories-create.php">Create Category</a>
                         <a class="nav-link" href="./categories.php">View Categories</a>
+                        <a class="nav-link" href="./brands-create.php">Create Brand</a>
+                        <a class="nav-link" href="./brands.php">View Brands</a>
                     </nav>
                 </div>
                <!-- product -->

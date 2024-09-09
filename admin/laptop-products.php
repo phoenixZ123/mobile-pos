@@ -72,7 +72,7 @@
                                         <td><?= $Item['memory'] ?></td>
                                         <td><?= $Item['size'] ?></td>
                                         <td><?= $Item['quantity'] ?></td>
-                                        <td><?= $Item['price'] ?></td>
+                                        <td><?= number_format($Item['price'],2); ?></td>
                                         <td>
                                             <button
                                                 class="badge btn <?= ($Item['status'] == 0) ? "btn-primary" : "btn-danger" ?>">

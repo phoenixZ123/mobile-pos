@@ -222,6 +222,22 @@ if (isset($_POST['saveCategory'])) {
         redirect('../admin/categories-create.php', "Something Went Wrong!");
     }
 }
+if (isset($_POST['saveBrand'])) {
+    $name = validate($_POST['brandName']);
+    $cateId = validate($_POST['category_id']);
+    // $status = validate($_POST['status']) == true ? 1 : 0;
+    $data = [
+        'brandName' => $name,
+        'cate_id' => $cateId,
+        
+    ];
+    $result = insert('brands', $data);
+    if ($result) {
+        redirect('../admin/brands.php', "Brand Created Successful!");
+    } else {
+        redirect('../admin/brands-create.php', "Something Went Wrong!");
+    }
+}
 if (isset($_POST['updateCategory'])) {
     $updateId = validate($_POST['cateId']);
     $adminData = getById('categories', $updateId);
@@ -243,6 +259,25 @@ if (isset($_POST['updateCategory'])) {
             redirect('../admin/categories.php?id=' . $updateId, "Category Updated Successful!");
         } else {
             redirect('../admin/categories-edit.php?id=' . $updateId, "Something Went Wrong!");
+        }
+    }
+}
+if (isset($_POST['updateBrand'])) {
+    $updateId = validate($_POST['brandId']);
+    $adminData = getById('brands', $updateId);
+    if ($adminData['status'] != 200) {
+        redirect('../admin/brands-edit.php?id=' . $updateId, "Please fill require fields");
+    }
+    $name = validate($_POST['name']);
+    if ($name != '') {
+        $data = [
+            'brandName' => $name,
+        ];
+        $result = update('brands', $updateId, $data);
+        if ($result) {
+            redirect('../admin/brands.php?id=' . $updateId, "Brand Updated Successful!");
+        } else {
+            redirect('../admin/brands-edit.php?id=' . $updateId, "Something Went Wrong!");
         }
     }
 }

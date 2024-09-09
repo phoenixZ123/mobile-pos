@@ -1,6 +1,6 @@
 <?php include('../includes/header.php'); ?>
 <div class="container px-4">
-    <div class="card  start-20 shadow ">
+    <div class="card mt-3 start-20 shadow ">
         <div class="card-header">
             <h4 class="md-0">Add Product
                 <a href="products.php" class="btn btn-primary float-end">Back</a>

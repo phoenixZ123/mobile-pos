@@ -6,7 +6,8 @@ function validate($inputData)
 {
     return htmlspecialchars(strip_tags(trim($inputData)));
 }
-function redirect($url, $message = null) {
+function redirect($url, $message = null)
+{
     if ($message) {
         $_SESSION['status'] = $message;
     }
@@ -80,13 +81,39 @@ function getAll($tableName, $status = null)
     }
     return mysqli_query($conn, $query);
 }
-function getProductsByCategory($categoryName) {
+function getLargestOrderProduct($tableName, $orderTableName)
+{
+    global $conn;
+
+    // Validate table names
+    $productTable = validate($tableName);       // Product table (e.g., 'products')
+    $orderTable = validate($orderTableName);    // Orders table (e.g., 'order_items')
+
+    // SQL Query with proper table aliasing
+    $query = "SELECT p.*, SUM(o.quantity) AS total_ordered
+    FROM $productTable p
+    JOIN $orderTable oi ON p.id = oi.product_id  -- Join products with order_items
+    JOIN orders o ON o.id = oi.order_id          -- Join orders with order_items
+    GROUP BY p.id
+    ORDER BY total_ordered DESC";
+
+    $result = mysqli_query($conn, $query);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        return $result;
+    } else {
+        return null;
+    }
+}
+
+function getProductsByCategory($categoryName)
+{
     global $conn;
     $query = "SELECT products.*, categories.cateName 
               FROM products 
               JOIN categories ON products.category_id = categories.id
               WHERE categories.cateName = ?";
-              
+
     // Prepare the statement
     $stmt = mysqli_prepare($conn, $query);
     if (!$stmt) {
@@ -108,37 +135,61 @@ function getProductsByCategory($categoryName) {
 
     return $result;
 }
-function getOrder($table){
+function getOrder($table, $month = null)
+{
     global $conn;
-    $query = "SELECT $table.*,orders.date,customers.phone,products.name,orders.quantity, products.image, products.memory, products.size, customers.phone 
-    FROM $table 
-    JOIN customers ON $table.cus_id = customers.id 
-    JOIN products ON $table.product_id = products.id 
-    JOIN orders ON orders.id = $table.order_id 
-";
-              
-    // Prepare the statement
-    $stmt = mysqli_prepare($conn, $query);
-    if (!$stmt) {
-        die("Query preparation failed: " . mysqli_error($conn));
+
+    // Sanitize table name to prevent SQL injection
+    $table = mysqli_real_escape_string($conn, $table);
+
+    // Base SQL query
+    $query = "
+        SELECT 
+            $table.*, 
+            orders.date AS date, 
+            customers.phone AS customer_phone, 
+            products.name AS product_name, 
+            orders.quantity, 
+            products.image AS product_image, 
+            products.memory AS product_memory, 
+            products.size AS product_size 
+        FROM $table 
+        JOIN customers ON $table.cus_id = customers.id 
+        JOIN products ON $table.product_id = products.id 
+        JOIN orders ON orders.id = $table.order_id  
+    ";
+
+    // Add month filtering if provided
+    if ($month) {
+        $query .= " WHERE MONTH(orders.date) = " . intval($month);
     }
 
-    // Bind the category name parameter to the prepared statement
-    // mysqli_stmt_bind_param($stmt, "s", $phone);
+    $query .= " ORDER BY $table.id DESC";
 
-    // Execute the statement
-    mysqli_stmt_execute($stmt);
+    // Execute the query
+    $result = mysqli_query($conn, $query);
 
-    // Get the result
-    $result = mysqli_stmt_get_result($stmt);
-
+    // Check if the query was successful
     if (!$result) {
-        die("Query execution failed: " . mysqli_error($conn));
+        // Handle query failure
+        die("Error executing query: " . mysqli_error($conn));
     }
 
-    return $result;
+    // Fetch data from the result set
+    $data = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row;
+    }
+
+    // Free result set
+    mysqli_free_result($result);
+
+    // Return the fetched data
+    return $data;
 }
-function getCategoryById($cateId) {
+
+function getCategoryById($cateId)
+{
     global $conn;
 
     // Prepare the SQL query to fetch the category by cate_id
@@ -167,7 +218,8 @@ function getCategoryById($cateId) {
     return $category ? $category['cateName'] : null;
 }
 
-function getBrandById($brandId) {
+function getBrandById($brandId)
+{
     global $conn;
 
     // Prepare the SQL query to fetch the brand by brand_id
@@ -227,18 +279,20 @@ function getById($tableName, $id)
         return $response;
     }
 }
-function getTotalQuantitySold($tableName) {
+function getTotalQuantitySold($tableName)
+{
     global $conn;
     $table = validate($tableName);
 
     $query = "SELECT SUM(quantity) AS total FROM $table";
-    
-    $res=mysqli_query($conn,$query);
+
+    $res = mysqli_query($conn, $query);
     return $res;
-  
+
 }
 
-function getOrdersDataForPieChart() {
+function getOrdersDataForPieChart()
+{
     global $conn;
 
     // SQL query to get the total number of orders for each category
@@ -259,7 +313,7 @@ function getOrdersDataForPieChart() {
         // Populate the labels and data arrays with the query results
         while ($row = mysqli_fetch_assoc($result)) {
             $labels[] = $row['category'];
-            $data[] = (int)$row['order_count'];
+            $data[] = (int) $row['order_count'];
         }
     } else {
         echo '<h4>Something Went Wrong</h4>';
@@ -278,7 +332,8 @@ function deleteFunc($tableName, $id)
     $result = mysqli_query($conn, $query);
     return $result;
 }
-function deleteOrder($tableName, $id) {
+function deleteOrder($tableName, $id)
+{
     global $conn;
     $table = validate($tableName);
     $id = validate($id);
@@ -288,7 +343,7 @@ function deleteOrder($tableName, $id) {
               FROM $table 
               JOIN order_items ON $table.id = order_items.order_id 
               WHERE $table.id='$id'";
-    
+
     $result = mysqli_query($conn, $query);
 
     return $result;
@@ -307,12 +362,14 @@ function checkParamId($type)
     }
 }
 
-function logoutSession(){
+function logoutSession()
+{
     unset($_SESSION['loggedIn']);
     unset($_SESSION['loggedInUser']);
 }
 
-function jsonResponse($status,$status_type,$message){
+function jsonResponse($status, $status_type, $message)
+{
     $response = [
         'status' => $status,
         'status_type' => $status_type,
