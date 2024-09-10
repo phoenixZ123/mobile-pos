@@ -19,7 +19,7 @@
         <mxCell id="a3BqBZal-KIyaXah_P5o-9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
             <mxPoint x="230" y="160" as="sourcePoint" />
-            <mxPoint x="330" y="160" as="targetPoint" />
+            <mxPoint x="320" y="160" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="a3BqBZal-KIyaXah_P5o-10" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
@@ -38,6 +38,18 @@
             <Array as="points">
               <mxPoint x="250" y="150" />
             </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a3BqBZal-KIyaXah_P5o-13" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="160" as="sourcePoint" />
+            <mxPoint x="330" y="170" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="a3BqBZal-KIyaXah_P5o-14" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="160" as="sourcePoint" />
+            <mxPoint x="330" y="150" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
